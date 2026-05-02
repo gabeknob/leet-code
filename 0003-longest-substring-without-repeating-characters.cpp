@@ -2,26 +2,24 @@ class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
         if (s.size() == 0) return 0;
+        unordered_set<char> occurences {};
 
-        int c1 = 0;
-        int maxsize = 1;
-        map<char, int> pool { { s[0], 0 } };
+        int maxWindow = 1;
 
-        for (int c2 = 1; c2 < s.size(); c2++) {
-            if (pool.count(s[c2])) {
-                int nstart = pool[s[c2]] + 1;
-                while (c1 < nstart) {
-                    pool.erase(s[c1]);
-                    c1++;
-                }
+        int left = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char currChar = s[right];
 
-                pool[s[c2]] = c2;
+            if (!occurences.count(currChar)) {
+                occurences.insert(currChar);
             } else {
-                pool.insert({ s[c2], c2 });
-                maxsize = max(maxsize, c2 - c1 + 1);
+                while (s[left] != currChar) occurences.erase(s[left++]);
+                occurences.insert(++left);
             }
+
+            maxWindow = max(maxWindow, right - left + 1);
         }
 
-        return maxsize;
+        return maxWindow;
     }
-};
+}; 
